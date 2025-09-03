@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom'
 import { 
   Home, 
   Layout, 
-  Images, 
+  Image, 
   Settings, 
   User, 
   Menu,
@@ -18,7 +18,7 @@ function AppShell() {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
     { name: 'Templates', href: '/templates', icon: Layout },
-    { name: 'My Galleries', href: '/', icon: Images },
+    { name: 'My Galleries', href: '/', icon: Image },
     { name: 'Settings', href: '/settings', icon: Settings },
   ]
 
