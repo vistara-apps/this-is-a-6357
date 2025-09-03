@@ -4,6 +4,8 @@ import { Edit, Share2, ArrowLeft, Heart, ExternalLink } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import GalleryGrid from '../components/GalleryGrid'
 import SocialShareButton from '../components/SocialShareButton'
+import SEOHelmet from '../components/SEOHelmet'
+import { toast } from 'react-toastify'
 
 function GalleryView() {
   const { id } = useParams()
@@ -38,12 +40,33 @@ function GalleryView() {
       })
     } else {
       navigator.clipboard.writeText(window.location.href)
-      alert('Gallery link copied to clipboard!')
+      toast.success('Gallery link copied to clipboard!', {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      })
     }
   }
+  
+  // Get the first photo for the Open Graph image
+  const ogImage = gallery.photos && gallery.photos.length > 0 
+    ? gallery.photos[0].imageUrl 
+    : null
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-purple-700">
+      {/* SEO and Open Graph tags */}
+      <SEOHelmet
+        title={gallery.title}
+        description={gallery.description || `A beautiful gallery of pet photos`}
+        image={ogImage}
+        url={window.location.href}
+        type="article"
+      />
+      
       {/* Header */}
       <div className="bg-white/10 backdrop-blur-sm border-b border-white/20">
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-6">
