@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { Crown, Check, CreditCard, User, Bell, Shield } from 'lucide-react'
+import { Crown, Check, CreditCard, User, Bell, Shield, X } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import StripeCheckout from '../components/StripeCheckout'
 
 function Settings() {
   const { user } = useApp()
   const [activeTab, setActiveTab] = useState('subscription')
+  const [showCheckout, setShowCheckout] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState(null)
 
   const tabs = [
     { id: 'subscription', name: 'Subscription', icon: Crown },
@@ -119,6 +122,12 @@ function Settings() {
                 }
               `}
               disabled={plan.current}
+              onClick={() => {
+                if (!plan.current) {
+                  setSelectedPlan(plan)
+                  setShowCheckout(true)
+                }
+              }}
             >
               {plan.current ? 'Current Plan' : `Upgrade to ${plan.name}`}
             </button>
@@ -239,6 +248,19 @@ function Settings() {
     </div>
   )
 
+  const handleCheckoutSuccess = () => {
+    // In a real app, this would update the user's subscription status
+    setTimeout(() => {
+      setShowCheckout(false)
+      // Simulate subscription update
+      alert('Subscription updated successfully!')
+    }, 1500)
+  }
+
+  const handleCheckoutCancel = () => {
+    setShowCheckout(false)
+  }
+
   return (
     <div className="p-4 lg:p-8">
       <div className="max-w-6xl mx-auto">
@@ -251,6 +273,27 @@ function Settings() {
             </p>
           </div>
         </div>
+        
+        {/* Checkout Modal */}
+        {showCheckout && selectedPlan && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="relative">
+              <button
+                onClick={handleCheckoutCancel}
+                className="absolute -top-4 -right-4 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg text-gray-500 hover:text-gray-700 z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <StripeCheckout
+                planId={selectedPlan.id}
+                planName={selectedPlan.name}
+                amount={selectedPlan.price.replace('$', '')}
+                onSuccess={handleCheckoutSuccess}
+                onCancel={handleCheckoutCancel}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="bg-white rounded-lg shadow-card overflow-hidden">
